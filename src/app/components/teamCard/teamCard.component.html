@@ -1,0 +1,6 @@
+<!--fxLayoutAlign: justify-content align-items  =  place-content: center space-evenly;-->
+<div fxLayout="row wrap" fxFlex="100" fxLayoutAlign="space-evenly center">
+    <div *ngFor="let card of cardsObs | async" fxLayout="row wrap" >
+        <card [member]="card" fxFlex="22"></card>
+    </div>
+</div>
