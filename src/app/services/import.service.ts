@@ -1,23 +1,27 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, map, Observable, throwError } from "rxjs";
+import { catchError, Observable, throwError } from "rxjs";
+import { IEmployee } from "../interfaces/IEmployee";
 
 @Injectable({
   providedIn: "root",
 })
 export class ImportService {
-  constructor(private _httpClient: HttpClient) {}
-  getData(): Observable<any> {
+  constructor (private _httpClient: HttpClient) { }
+  /**
+   * Gets data
+   * @returns data
+   */
+  getData(): Observable<IEmployee[]> {
     let url = `https://jsonplaceholder.typicode.com/users`;
-    return this._httpClient.get(url).pipe(catchError(this.handleError));
+    return this._httpClient.get<IEmployee[]>(url).pipe(catchError(this.handleError));
   }
-
   /**
    * Get Errors
    *
    * @returns {errorMessage}
    */
-  handleError(error: { error: { message: any }; status: any; message: any }) {
+  handleError<T extends IError<T>>(error: T): Observable<T> {
     let errorMessage = "";
     if (error.error instanceof ErrorEvent) {
       // client-side error
@@ -30,8 +34,13 @@ export class ImportService {
     return throwError(() => {
       const error: any = new Error(errorMessage);
       error.timestamp = Date.now();
-      console.log(error.timestamp);
       return error;
     });
   }
+}
+
+export interface IError<T> {
+  error: T;
+  status: T;
+  message: T;
 }
